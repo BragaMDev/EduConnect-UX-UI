@@ -1,0 +1,2123 @@
+  <!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#ffffff" id="metaTheme" />
+    <script>
+      // Aplica o tema salvo (ou a preferência do sistema) antes da página renderizar
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem("educonnect-theme"); } catch (e) {}
+        if (t !== "dark" && t !== "light") {
+          t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        }
+        document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
+    <title>EduConnect · Portal do Aluno</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="EduConnect.jpg" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --sec-bg: #ebf5ff;
+        --bd: #e2e8f0;
+        --ink: #252641;
+        --mu: #696984;
+        --pr: #49bbbd;
+        --pr-dk: #3aa3a5;
+        --navy: #252641;
+        --ok: #10b981;
+        --wa: #f59e0b;
+        --bad: #ef4444;
+        --surface: #ffffff;
+        --hover: #f8fafc;
+        --soft: #f1f5f9;
+        --track: #e2e8f0;
+        --bd-strong: #cbd5e1;
+        --card-bd: rgba(37, 38, 65, 0.07);
+        --topbar-bg: rgba(255, 255, 255, 0.96);
+        --topbar-bd: rgba(37, 38, 65, 0.08);
+        --chip-bg: rgba(255, 255, 255, 0.95);
+        color-scheme: light;
+        box-sizing: border-box;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 14px/1.6 "Poppins", system-ui, sans-serif;
+        overflow-x: hidden;
+      }
+      button {
+        font: inherit;
+        cursor: pointer;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--pr);
+        outline-offset: 2px;
+      }
+
+      /* Top Header (No Sidebar) */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        background: var(--topbar-bg);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--topbar-bd);
+        transition: all 0.2s;
+      }
+      .nav-pill {
+        padding: 8px 14px;
+        border-radius: 99px;
+        font-weight: 500;
+        font-size: 13.5px;
+        color: var(--mu);
+        background: transparent;
+        border: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .nav-pill:hover {
+        color: var(--pr);
+        background: rgba(73, 187, 189, 0.08);
+      }
+      .nav-pill.on {
+        background: var(--pr);
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 6px 16px -4px rgba(73, 187, 189, 0.5);
+      }
+
+      /* Hero Curved Section inspired by reference layout */
+      .hero-curve {
+        position: relative;
+        background: linear-gradient(125deg, #252641 0%, #2f486d 48%, #49bbbd 100%);
+        color: #fff;
+        border-bottom-left-radius: 50% 42px;
+        border-bottom-right-radius: 50% 42px;
+        overflow: hidden;
+      }
+      .hero-banner-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.35;
+        pointer-events: none;
+      }
+      .glass-chip {
+        background: var(--chip-bg);
+        backdrop-filter: blur(10px);
+        color: var(--ink);
+        border-radius: 16px;
+        box-shadow: 0 14px 30px rgba(37, 38, 65, 0.16);
+      }
+
+      /* Cards & Surfaces */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--card-bd);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px -10px rgba(37, 38, 65, 0.08);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .card-hover:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 18px 36px -12px rgba(37, 38, 65, 0.14);
+      }
+      .sec-band {
+        background: var(--sec-bg);
+        border-radius: 28px;
+      }
+      .mu {
+        color: var(--mu);
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 18px;
+        border-radius: 99px;
+        border: 1px solid var(--bd);
+        background: var(--surface);
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.2s;
+        color: var(--ink);
+      }
+      .btn:hover {
+        background: var(--hover);
+        border-color: var(--bd-strong);
+      }
+      .btn.p {
+        background: var(--pr);
+        border-color: var(--pr);
+        color: #fff;
+        box-shadow: 0 6px 16px -4px rgba(73, 187, 189, 0.45);
+      }
+      .btn.p:hover {
+        background: var(--pr-dk);
+        border-color: var(--pr-dk);
+      }
+      .btn.navy {
+        background: var(--navy);
+        border-color: var(--navy);
+        color: #fff;
+      }
+      .btn.navy:hover {
+        background: #1b1c33;
+      }
+      .btn.d {
+        background: var(--bad);
+        border-color: var(--bad);
+        color: #fff;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      .sp {
+        width: 16px;
+        height: 16px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        animation: r 0.7s linear infinite;
+      }
+      @keyframes r {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Badges */
+      .b {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 12px;
+        border-radius: 99px;
+        font-size: 11.5px;
+        font-weight: 600;
+      }
+      .b-ok {
+        background: #d1fae5;
+        color: #047857;
+      }
+      .b-wa {
+        background: #fef3c7;
+        color: #b45309;
+      }
+      .b-bad {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+      .b-in {
+        background: rgba(73, 187, 189, 0.16);
+        color: #218385;
+      }
+
+      /* Progress Bar */
+      .pb {
+        height: 8px;
+        border-radius: 99px;
+        background: var(--track);
+        position: relative;
+        overflow: visible;
+      }
+      .pb i {
+        display: block;
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.5s;
+      }
+
+      .view {
+        display: none;
+      }
+      .view.on {
+        display: block;
+        animation: f 0.25s;
+      }
+      @keyframes f {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+      .cov {
+        width: 100%;
+        aspect-ratio: 16/8.5;
+        object-fit: cover;
+        display: block;
+      }
+      .in {
+        width: 100%;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 10px 14px;
+        background: var(--surface);
+        transition: all 0.2s;
+      }
+      .in:focus {
+        border-color: var(--pr);
+        outline: 0;
+        box-shadow: 0 0 0 3px rgba(73, 187, 189, 0.2);
+      }
+
+      /* Modals & Overlays */
+      .ovl {
+        position: fixed;
+        inset: 0;
+        background: rgba(37, 38, 65, 0.55);
+        backdrop-filter: blur(4px);
+        z-index: 60;
+        display: none;
+        place-items: center;
+        padding: 16px;
+      }
+      .ovl.o {
+        display: grid;
+      }
+      .md {
+        background: var(--surface);
+        border-radius: 22px;
+        width: min(520px, 100%);
+        max-height: 90vh;
+        overflow: auto;
+        padding: 26px;
+        animation: f 0.2s;
+      }
+
+      /* Schedule Grid */
+      .sch {
+        display: grid;
+        grid-template-columns: 40px repeat(5, 1fr);
+        gap: 4px;
+        font-size: 11px;
+        min-width: 300px;
+      }
+      .sch > div {
+        min-height: 40px;
+        background: var(--soft);
+        border-radius: 8px;
+        padding: 4px 6px;
+      }
+      .sch .h {
+        background: none;
+        min-height: 0;
+        text-align: center;
+        color: var(--mu);
+        font-weight: 600;
+      }
+      .sch .c {
+        background: var(--pr);
+        color: #fff;
+        font-weight: 600;
+      }
+
+      /* Toasts */
+      .tw {
+        position: fixed;
+        top: 82px;
+        right: 18px;
+        z-index: 80;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .t {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        background: var(--navy);
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(37, 38, 65, 0.28);
+        animation: f 0.25s;
+        max-width: 350px;
+      }
+
+      .g2 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 350px;
+        gap: 24px;
+      }
+      .g3 {
+        display: grid;
+        grid-template-columns: 340px minmax(0, 1fr);
+        gap: 20px;
+      }
+      @media (max-width: 1023px) {
+        .g2,
+        .g3 {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      .pop {
+        position: absolute;
+        right: 0;
+        top: 48px;
+        width: 340px;
+        max-width: calc(100vw - 24px);
+        background: var(--surface);
+        border: 1px solid var(--bd);
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(37, 38, 65, 0.18);
+        display: none;
+        z-index: 50;
+      }
+      .pop.o {
+        display: block;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Botão de alternar tema */
+      .theme-btn {
+        position: relative;
+        overflow: hidden;
+      }
+      .theme-btn svg {
+        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+      }
+      .theme-btn:hover svg {
+        transform: rotate(18deg) scale(1.08);
+      }
+      .theme-btn .ico-sun {
+        display: none;
+      }
+      html[data-theme="dark"] .theme-btn .ico-sun {
+        display: block;
+      }
+      html[data-theme="dark"] .theme-btn .ico-moon {
+        display: none;
+      }
+      .theme-anim,
+      .theme-anim *,
+      .theme-anim *::before,
+      .theme-anim *::after {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+      }
+
+      /* ===================== TEMA ESCURO ===================== */
+      @media not print {
+        html[data-theme="dark"] {
+          --bg: #0f1020;
+          --sec-bg: #1c1e3a;
+          --bd: #34365a;
+          --bd-strong: #4a4d78;
+          --ink: #e8e9f5;
+          --mu: #a2a4c0;
+          --surface: #191a31;
+          --hover: #222446;
+          --soft: #24264a;
+          --track: #2c2e52;
+          --card-bd: rgba(255, 255, 255, 0.08);
+          --topbar-bg: rgba(15, 16, 32, 0.92);
+          --topbar-bd: rgba(255, 255, 255, 0.08);
+          --chip-bg: rgba(25, 26, 49, 0.94);
+          color-scheme: dark;
+        }
+        html[data-theme="dark"] .card {
+          box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+        html[data-theme="dark"] .card-hover:hover {
+          box-shadow: 0 18px 36px -12px rgba(0, 0, 0, 0.6);
+        }
+        html[data-theme="dark"] .glass-chip {
+          box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+        }
+        html[data-theme="dark"] .btn.navy {
+          background: #34376b;
+          border-color: #34376b;
+        }
+        html[data-theme="dark"] .btn.navy:hover {
+          background: #40448a;
+        }
+        html[data-theme="dark"] .t {
+          background: #2b2e5a;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        html[data-theme="dark"] .ovl {
+          background: rgba(5, 6, 15, 0.7);
+        }
+        html[data-theme="dark"] .pop {
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.55);
+        }
+        html[data-theme="dark"] .b-ok {
+          background: rgba(16, 185, 129, 0.18);
+          color: #6ee7b7;
+        }
+        html[data-theme="dark"] .b-wa {
+          background: rgba(245, 158, 11, 0.18);
+          color: #fcd34d;
+        }
+        html[data-theme="dark"] .b-bad {
+          background: rgba(239, 68, 68, 0.2);
+          color: #fca5a5;
+        }
+        html[data-theme="dark"] .b-in {
+          background: rgba(73, 187, 189, 0.2);
+          color: #7fdcde;
+        }
+        html[data-theme="dark"] .in::placeholder {
+          color: #7f819f;
+        }
+        html[data-theme="dark"] .nav-pill:hover {
+          background: rgba(73, 187, 189, 0.14);
+        }
+        html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+          background: #3a3d68;
+          border-radius: 8px;
+        }
+
+        /* Classes utilitárias do Tailwind usadas com cores fixas (modo claro) */
+        html[data-theme="dark"] .text-\[\#252641\] {
+          color: var(--ink) !important;
+        }
+        html[data-theme="dark"] .mbg {
+          color: #252641 !important;
+        }
+        html[data-theme="dark"] .text-\[\#696984\] {
+          color: var(--mu) !important;
+        }
+        html[data-theme="dark"] .text-\[\#218385\] {
+          color: #7fdcde !important;
+        }
+        html[data-theme="dark"] .bg-white:not(#footerLogo),
+        html[data-theme="dark"] .bg-white\/95 {
+          background-color: var(--surface) !important;
+        }
+        html[data-theme="dark"] .bg-slate-50\/80,
+        html[data-theme="dark"] .bg-slate-50\/60,
+        html[data-theme="dark"] .bg-slate-100 {
+          background-color: var(--soft) !important;
+        }
+        html[data-theme="dark"] .hover\:bg-slate-50:hover,
+        html[data-theme="dark"] .hover\:bg-slate-100:hover {
+          background-color: var(--hover) !important;
+        }
+        html[data-theme="dark"] .bg-\[\#ebf5ff\] {
+          background-color: var(--sec-bg) !important;
+        }
+        html[data-theme="dark"] main .bg-\[\#252641\] {
+          background-color: #256f72 !important;
+        }
+        html[data-theme="dark"] .bg-emerald-100 {
+          background-color: rgba(16, 185, 129, 0.18) !important;
+        }
+        html[data-theme="dark"] .bg-amber-100 {
+          background-color: rgba(245, 158, 11, 0.18) !important;
+        }
+        html[data-theme="dark"] .bg-sky-100 {
+          background-color: rgba(14, 165, 233, 0.18) !important;
+        }
+        html[data-theme="dark"] .bg-teal-100 {
+          background-color: rgba(73, 187, 189, 0.2) !important;
+        }
+        html[data-theme="dark"] .text-emerald-600 {
+          color: #34d399 !important;
+        }
+        html[data-theme="dark"] .text-amber-600 {
+          color: #fbbf24 !important;
+        }
+        html[data-theme="dark"] .text-sky-600 {
+          color: #38bdf8 !important;
+        }
+        html[data-theme="dark"] .text-slate-500 {
+          color: #9ea1bf !important;
+        }
+        html[data-theme="dark"] .hover\:text-red-600:hover {
+          color: #f87171 !important;
+        }
+        html[data-theme="dark"] .border-slate-100,
+        html[data-theme="dark"] .border-slate-200,
+        html[data-theme="dark"] .hover\:border-slate-200:hover {
+          border-color: var(--bd) !important;
+        }
+        /* Bordas padrão do Tailwind (#e5e7eb) → cor de borda do tema */
+        html[data-theme="dark"] [class*="border"]:not([class*="border-["]):not([class*="border-white"]):not([class*="border-transparent"]) {
+          border-color: var(--bd);
+        }
+        /* Estilos inline com cores claras */
+        html[data-theme="dark"] [style*="#FFFBEB"] {
+          background: rgba(245, 158, 11, 0.12) !important;
+          border-color: rgba(245, 158, 11, 0.45) !important;
+        }
+        html[data-theme="dark"] [style*="#ECFDF5"] {
+          background: rgba(16, 185, 129, 0.12) !important;
+          border-color: rgba(16, 185, 129, 0.45) !important;
+        }
+        html[data-theme="dark"] [style*="#B91C1C"] {
+          color: #f87171 !important;
+        }
+      }
+      @media print {
+        body > *:not(.ovl) {
+          display: none !important;
+        }
+        .ovl {
+          position: static;
+          background: none;
+          display: block;
+        }
+        .np {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Navigation Header (No Sidebar) -->
+    <header class="topbar">
+      <div class="max-w-[1360px] mx-auto px-4 md:px-8 h-[72px] flex items-center gap-4">
+        <!-- Brand Logo -->
+        <button onclick="go('dash')" class="flex items-center gap-2.5 text-left flex-none group">
+          <img
+            id="brandLogo"
+            alt="Logo EduConnect"
+            class="w-10 h-10 rounded-xl object-cover border border-slate-200 shadow-sm group-hover:scale-105 transition"
+          />
+          <div class="leading-tight">
+            <span class="font-extrabold text-[17px] tracking-tight text-[#252641] block">
+              <span class="text-[#49BBBD]">EduConnect</span>
+            </span>
+            <small class="text-[11px] text-[#696984] font-medium block">Portal do Aluno</small>
+          </div>
+        </button>
+
+        <!-- Horizontal Desktop Navigation -->
+        <nav id="topNav" class="hidden xl:flex items-center gap-1 mx-auto"></nav>
+
+        <!-- Right Controls: Search, Notifications, User Profile, Logout -->
+        <div class="flex items-center gap-2.5 ml-auto xl:ml-0">
+          <button
+            id="sk"
+            class="btn !py-2 !px-3.5 !rounded-full mu !font-normal text-xs hidden sm:inline-flex items-center gap-2 bg-slate-50/80"
+          >
+            <i data-lucide="search" class="w-4 h-4 text-[#49BBBD]"></i>
+            <span>Buscar...</span>
+            <kbd class="text-[10px] border rounded px-1.5 bg-white">Ctrl K</kbd>
+          </button>
+          <button
+            id="skMob"
+            onclick="srch()"
+            class="btn !p-2.5 sm:hidden"
+            aria-label="Buscar"
+          >
+            <i data-lucide="search" class="w-4 h-4"></i>
+          </button>
+
+          <button
+            id="themeBtn"
+            class="btn theme-btn !p-2.5"
+            type="button"
+            aria-label="Ativar tema escuro"
+            title="Ativar tema escuro"
+          >
+            <i data-lucide="moon" class="w-4 h-4 ico-moon"></i>
+            <i data-lucide="sun" class="w-4 h-4 ico-sun"></i>
+          </button>
+
+          <div class="relative">
+            <button class="btn !p-2.5 relative" id="bl" aria-label="Notificações">
+              <i data-lucide="bell" class="w-4 h-4"></i>
+              <span
+                id="bc"
+                class="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-red-500 text-white text-[10px] font-bold grid place-items-center"
+              ></span>
+            </button>
+            <div class="pop" id="pp"></div>
+          </div>
+
+          <button
+            id="a1b"
+            class="flex items-center gap-2 pl-1.5 pr-3 py-1 rounded-full hover:bg-slate-100 transition border border-transparent hover:border-slate-200"
+            aria-label="Meu perfil"
+          >
+            <img id="a1" class="w-8 h-8 rounded-full object-cover" alt="Foto de Aluno" />
+            <span class="hidden md:inline text-xs font-semibold text-[#252641]">Aluno</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 hidden md:inline"></i>
+          </button>
+
+          <button
+            id="lo"
+            class="btn !p-2.5 text-slate-500 hover:text-red-600"
+            title="Sair da conta"
+            aria-label="Sair da conta"
+          >
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal Scrollable Nav for Mobile/Tablet -->
+      <div class="xl:hidden border-t border-slate-100 bg-white/95 px-4 py-2 overflow-x-auto no-scrollbar">
+        <nav id="mobNav" class="flex items-center gap-1.5 min-w-max"></nav>
+      </div>
+    </header>
+
+    <!-- Dynamic Hero / Page Header -->
+    <div id="heroArea"></div>
+
+    <!-- Main Container -->
+    <main class="px-4 md:px-8 py-8 max-w-[1360px] mx-auto w-full" id="main">
+      <section class="view on" id="v-dash"></section>
+      <section class="view" id="v-notas"></section>
+      <section class="view" id="v-agenda"></section>
+      <section class="view" id="v-mat"></section>
+      <section class="view" id="v-fin"></section>
+      <section class="view" id="v-bib"></section>
+      <section class="view" id="v-msg"></section>
+      <section class="view" id="v-perfil"></section>
+    </main>
+
+    <!-- Footer inspired by reference dark navy footer -->
+    <footer class="bg-[#252641] text-white mt-16 py-12 px-4 md:px-8">
+      <div class="max-w-[1360px] mx-auto flex flex-col items-center text-center">
+        <div class="flex items-center gap-3 mb-4">
+          <img id="footerLogo" alt="EduConnect" class="w-10 h-10 rounded-xl object-cover bg-white p-0.5" />
+          <div class="text-left border-l border-white/20 pl-3">
+            <b class="text-base block">EduConnect</b>
+            <small class="text-slate-300 text-xs">Ambiente Virtual de Aprendizagem</small>
+          </div>
+        </div>
+        <p class="text-slate-400 text-xs max-w-md mb-6">
+          Plataforma integrada de gestão acadêmica, acompanhamento de desempenho e serviços universitários.
+        </p>
+        <div class="flex flex-wrap justify-center gap-6 text-xs text-slate-300 mb-6">
+          <button onclick="go('dash')" class="hover:text-[#49BBBD]">Visão Geral</button>
+          <button onclick="go('notas')" class="hover:text-[#49BBBD]">Notas e Faltas</button>
+          <button onclick="go('agenda')" class="hover:text-[#49BBBD]">Agenda</button>
+          <button onclick="go('mat')" class="hover:text-[#49BBBD]">Matrícula</button>
+          <button onclick="go('fin')" class="hover:text-[#49BBBD]">Financeiro</button>
+          <button onclick="go('bib')" class="hover:text-[#49BBBD]">Biblioteca</button>
+        </div>
+        <small class="text-slate-400 text-[11px]">© 2026 EduConnect · Campus Jundiaí · Todos os direitos reservados.</small>
+      </div>
+    </footer>
+
+    <div class="ovl" id="ov"><div class="md" id="md"></div></div>
+    <div class="tw" id="tw"></div>
+
+    <script>
+      const U = (s) => "data:image/svg+xml," + encodeURIComponent(s);
+
+      // Logotipo vetorial institucional EduConnect (Livro aberto + Rede conectada em #49BBBD e #252641)
+      const LOGO_URL = U(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+          <rect width="120" height="120" rx="28" fill="#252641"/>
+          <path d="M24 44c14-6 26-4 36 4 10-8 22-10 36-4v42c-14-6-26-4-36 4-10-8-22-10-36-4V44z" fill="none" stroke="#49BBBD" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M60 48v42" stroke="#49BBBD" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="60" cy="28" r="7" fill="#F48C06"/>
+          <circle cx="38" cy="34" r="5" fill="#49BBBD"/>
+          <circle cx="82" cy="34" r="5" fill="#49BBBD"/>
+          <path d="M42 33l13-4M78 33l-13-4" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-opacity="0.8"/>
+        </svg>
+      `);
+
+      // Banner institucional em arte vetorial panorâmica EduConnect
+      const BANNER_URL = U(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 360" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#1D1E36"/>
+              <stop offset="55%" stop-color="#252641"/>
+              <stop offset="100%" stop-color="#49BBBD"/>
+            </linearGradient>
+            <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.16"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <rect width="1440" height="360" fill="url(#bg)"/>
+          <!-- Malha geométrica e arcos arquitetônicos -->
+          <circle cx="1220" cy="60" r="240" fill="#49BBBD" fill-opacity="0.14"/>
+          <circle cx="180" cy="320" r="210" fill="#49BBBD" fill-opacity="0.10"/>
+          <path d="M0 290 Q 360 210 720 270 T 1440 220 L 1440 360 L 0 360 Z" fill="url(#glass)"/>
+          <!-- Silhueta estilizada do campus moderno -->
+          <g fill="#ffffff" fill-opacity="0.08">
+            <rect x="820" y="130" width="140" height="230" rx="12"/>
+            <rect x="980" y="95" width="180" height="265" rx="12"/>
+            <rect x="1180" y="155" width="130" height="205" rx="12"/>
+          </g>
+          <g stroke="#49BBBD" stroke-opacity="0.35" stroke-width="2">
+            <line x1="845" y1="165" x2="935" y2="165"/>
+            <line x1="845" y1="195" x2="935" y2="195"/>
+            <line x1="845" y1="225" x2="935" y2="225"/>
+            <line x1="1010" y1="135" x2="1130" y2="135"/>
+            <line x1="1010" y1="165" x2="1130" y2="165"/>
+            <line x1="1010" y1="195" x2="1130" y2="195"/>
+            <line x1="1010" y1="225" x2="1130" y2="225"/>
+          </g>
+          <!-- Nós de conexão acadêmica -->
+          <g stroke="#ffffff" stroke-opacity="0.22" stroke-width="2" fill="none">
+            <path d="M90 90 L 240 60 L 390 120 L 540 70"/>
+            <circle cx="90" cy="90" r="5" fill="#49BBBD"/>
+            <circle cx="240" cy="60" r="6" fill="#F48C06"/>
+            <circle cx="390" cy="120" r="5" fill="#49BBBD"/>
+            <circle cx="540" cy="70" r="5" fill="#ffffff"/>
+          </g>
+        </svg>
+      `);
+
+      document.getElementById("brandLogo").src = LOGO_URL;
+      document.getElementById("footerLogo").src = LOGO_URL;
+
+      // Alternância de tema claro/escuro
+      (function () {
+        const root = document.documentElement;
+        const btn = document.getElementById("themeBtn");
+        const meta = document.getElementById("metaTheme");
+        const KEY = "educonnect-theme";
+
+        function apply(theme) {
+          root.setAttribute("data-theme", theme);
+          const dark = theme === "dark";
+          const label = dark ? "Ativar tema claro" : "Ativar tema escuro";
+          btn.setAttribute("aria-label", label);
+          btn.setAttribute("title", label);
+          btn.setAttribute("aria-pressed", String(dark));
+          if (meta) meta.setAttribute("content", dark ? "#0f1020" : "#ffffff");
+        }
+
+        apply(root.getAttribute("data-theme") || "light");
+
+        btn.addEventListener("click", () => {
+          const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          root.classList.add("theme-anim");
+          apply(next);
+          try { localStorage.setItem(KEY, next); } catch (e) {}
+          setTimeout(() => root.classList.remove("theme-anim"), 350);
+        });
+
+        // Se a pessoa nunca escolheu, acompanha a preferência do sistema
+        if (window.matchMedia) {
+          matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+            let saved = null;
+            try { saved = localStorage.getItem(KEY); } catch (err) {}
+            if (!saved) apply(e.matches ? "dark" : "light");
+          });
+        }
+      })();
+
+      const $ = (s) => document.querySelector(s),
+        $$ = (s) => [...document.querySelectorAll(s)];
+      const ic = (n, c = "w-4 h-4") =>
+          `<i data-lucide="${n}" class="${c}"></i>`,
+        ri = () => lucide.createIcons();
+
+      // Capas ilustrativas
+      function cov(t, a, b) {
+        let g = "";
+        const w = "#fff";
+        if (t === "code")
+          g =
+            [0, 1, 2, 3, 4, 5, 6]
+              .map(
+                (i) =>
+                  `<rect x="${40 + (i % 3) * 22}" y="${30 + i * 24}" width="${80 + ((i * 53) % 150)}" height="9" rx="4" fill="${w}" opacity="${0.25 + (i % 3) * 0.15}"/>`,
+              )
+              .join("") +
+            '<rect x="290" y="40" width="80" height="140" rx="8" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3"/><path d="M300 80h60M300 110h60M300 140h60" stroke="#fff" stroke-opacity=".5" stroke-width="3"/>';
+        else if (t === "chip")
+          g =
+            '<rect x="140" y="55" width="120" height="120" rx="10" fill="none" stroke="#fff" stroke-width="4"/><rect x="170" y="85" width="60" height="60" fill="#fff" opacity=".4"/>' +
+            [0, 1, 2, 3]
+              .map(
+                (i) =>
+                  `<path d="M${155 + i * 30} 55v-35M${155 + i * 30} 175v35M140 ${70 + i * 30}h-70M260 ${70 + i * 30}h70" stroke="#fff" stroke-opacity=".6" stroke-width="3"/>`,
+              )
+              .join("");
+        else if (t === "chart")
+          g =
+            [0, 1, 2, 3, 4, 5]
+              .map(
+                (i) =>
+                  `<rect x="${50 + i * 50}" y="${190 - (40 + ((i * 37) % 90))}" width="30" height="${40 + ((i * 37) % 90)}" rx="5" fill="#fff" opacity=".35"/>`,
+              )
+              .join("") +
+            '<polyline points="60,150 110,110 160,130 210,80 260,95 340,40" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>';
+        else if (t === "net")
+          g =
+            '<g stroke="#fff" stroke-opacity=".5" stroke-width="3"><path d="M80 60 200 120 320 50M200 120 110 180 300 180 200 120"/></g>' +
+            [
+              [80, 60],
+              [200, 120],
+              [320, 50],
+              [110, 180],
+              [300, 180],
+            ]
+              .map(
+                (p) =>
+                  `<circle cx="${p[0]}" cy="${p[1]}" r="14" fill="#fff" opacity=".85"/>`,
+              )
+              .join("");
+        else
+          g =
+            '<path d="M0 160Q80 20 160 120T320 70T400 130" fill="none" stroke="#fff" stroke-width="5" opacity=".8"/><path d="M0 190Q100 90 200 160T400 100" fill="none" stroke="#fff" stroke-width="3" opacity=".4"/><g stroke="#fff" stroke-opacity=".2">' +
+            [1, 2, 3, 4, 5, 6, 7]
+              .map((i) => `<path d="M${i * 55} 0v240"/>`)
+              .join("") +
+            "</g>";
+        return U(
+          `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="400" height="240" fill="url(#g)"/>${g}</svg>`,
+        );
+      }
+
+      const AVA = U(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect width="80" height="80" fill="#49BBBD"/><circle cx="40" cy="32" r="14" fill="#FDE2C8"/><path d="M26 30c0-12 28-12 28 0-4-6-24-6-28 0z" fill="#252641"/><path d="M12 80c2-20 16-28 28-28s26 8 28 28z" fill="#F1F5F9"/></svg>',
+      );
+      $("#a1").src = AVA;
+
+      const toast = (m, t = "ok") => {
+        const e = document.createElement("div");
+        e.className = "t";
+        e.innerHTML = `<span class="${t === "ok" ? "text-[#49BBBD]" : "text-red-400"}">${ic(t === "ok" ? "circle-check" : "circle-alert", "w-5 h-5")}</span><span>${m}</span>`;
+        $("#tw").appendChild(e);
+        ri();
+        setTimeout(() => e.remove(), 3200);
+      };
+
+      const mod = (h) => {
+          $("#md").innerHTML = h;
+          $("#ov").classList.add("o");
+          ri();
+        },
+        cm = () => $("#ov").classList.remove("o");
+      $("#ov").onclick = (e) => {
+        if (e.target.id === "ov") cm();
+      };
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") cm();
+      });
+
+      function ld(btn, ms, fn) {
+        const o = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="sp"></span>Aguarde…';
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = o;
+          ri();
+          fn();
+        }, ms);
+      }
+
+      // Navegação Horizontal
+      const V = [
+        ["dash", "Início", "layout-dashboard", "Acompanhe seu resumo acadêmico, próximas aulas e disciplinas em curso."],
+        ["notas", "Notas e faltas", "clipboard-check", "Consulte suas médias parciais, notas de provas e controle de frequência."],
+        ["agenda", "Agenda", "calendar-days", "Calendário de provas, entregas de projetos e datas institucionais."],
+        ["mat", "Matrícula", "shopping-cart", "Monte sua grade curricular para o próximo semestre sem choque de horários."],
+        ["fin", "Financeiro", "wallet", "Gerencie mensalidades, emita segunda via de boletos e pague via PIX."],
+        ["bib", "Biblioteca", "library", "Pesquise o acervo físico e digital, renove empréstimos e faça reservas."],
+        ["msg", "Mensagens", "mail", "Comunicação direta com professores, coordenação e secretaria."],
+        ["perfil", "Perfil", "user-round", "Seus dados cadastrais, informações acadêmicas e emissão de documentos."],
+      ];
+
+      function renderNav() {
+        const itemsHtml = V.map(
+          (v) =>
+            `<button class="nav-pill" data-v="${v[0]}">${ic(v[2], "w-4 h-4")}${v[1]}${v[0] === "msg" ? '<span class="mbg ml-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-amber-400 text-[#252641] text-[11px] font-bold grid place-items-center"></span>' : ""}</button>`,
+        ).join("");
+        $("#topNav").innerHTML = itemsHtml;
+        $("#mobNav").innerHTML = itemsHtml;
+        $$(".nav-pill[data-v]").forEach((b) => (b.onclick = () => go(b.dataset.v)));
+      }
+      renderNav();
+
+      const sd = () => {
+        const x = new Date().getHours();
+        return x < 12 ? "Bom dia" : x < 18 ? "Boa tarde" : "Boa noite";
+      };
+
+      function renderHero(v) {
+        const info = V.find((x) => x[0] === v);
+        const al = CR.filter((c) => c.f / c.lim > 0.75);
+
+        if (v === "dash") {
+          $("#heroArea").innerHTML = `
+            <section class="hero-curve pt-10 pb-16 md:pt-14 md:pb-20 px-4 md:px-8">
+              <img src="${BANNER_URL}" alt="Banner Institucional EduConnect" class="hero-banner-bg" />
+              <div class="max-w-[1360px] mx-auto relative z-10 grid lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7">
+                  <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold mb-4">
+                    <span class="w-2 h-2 rounded-full bg-[#49BBBD]"></span>
+                    Semestre 2026.2 · Ciência da Computação
+                  </div>
+                  <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                    ${sd()}, <span class="text-[#F48C06]">Aluno!</span><br/>
+                    Sua jornada acadêmica em um só lugar.
+                  </h1>
+                  <p class="text-slate-100/90 text-sm md:text-base mt-3 max-w-xl">
+                    Você tem 5 disciplinas ativas neste período. Faltam 5 semanas para o encerramento do semestre letivo.
+                  </p>
+                  <div class="flex flex-wrap items-center gap-3 mt-6">
+                    <button class="btn p !px-6 !py-3 text-sm" onclick="go('agenda')">
+                      ${ic("calendar-days", "w-4 h-4")}Ver agenda completa
+                    </button>
+                    <button class="btn !bg-white/15 !border-white/30 !text-white hover:!bg-white/25 !px-5 !py-3 text-sm" onclick="go('notas')">
+                      ${ic("clipboard-check", "w-4 h-4")}Boletim e faltas
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Floating Status Cards inspired by reference hero -->
+                <div class="lg:col-span-5 grid sm:grid-cols-2 lg:grid-cols-1 gap-3.5">
+                  <div class="glass-chip p-4 flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-[#49BBBD]/15 text-[#218385] grid place-items-center flex-none">
+                      ${ic("clock", "w-5 h-5")}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <small class="text-[11px] font-semibold text-[#696984] block">Próxima Aula · Hoje às 14h</small>
+                      <b class="text-sm text-[#252641] truncate block">Banco de Dados · Lab 12</b>
+                    </div>
+                    <span class="b b-in">Em breve</span>
+                  </div>
+
+                  <div class="glass-chip p-4 flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-600 grid place-items-center flex-none">
+                      ${ic("triangle-alert", "w-5 h-5")}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <small class="text-[11px] font-semibold text-[#696984] block">Frequência e Presença</small>
+                      <b class="text-sm text-[#252641] block">${al.length} disciplina(s) em alerta</b>
+                    </div>
+                    <button onclick="go('notas')" class="text-xs font-bold text-[#49BBBD] hover:underline">Conferir</button>
+                  </div>
+
+                  <div class="glass-chip p-4 flex items-center gap-3.5 sm:col-span-2 lg:col-span-1">
+                    <img src="${AVA}" alt="Aluno" class="w-11 h-11 rounded-xl object-cover flex-none" />
+                    <div class="min-w-0 flex-1">
+                      <b class="text-sm text-[#252641] block">Aluno</b>
+                      <small class="text-[11px] text-[#696984]">RA 2023.0815 · 5º Período · Campus Jundiaí</small>
+                    </div>
+                    <span class="b b-ok">Ativa</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          `;
+        } else {
+          $("#heroArea").innerHTML = `
+            <section class="relative bg-[#252641] text-white py-8 md:py-10 px-4 md:px-8 overflow-hidden">
+              <img src="${BANNER_URL}" alt="Banner Institucional" class="hero-banner-bg" />
+              <div class="max-w-[1360px] mx-auto relative z-10 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <div class="flex items-center gap-2 text-xs text-[#49BBBD] font-semibold mb-1">
+                    <button onclick="go('dash')" class="hover:underline">Início</button>
+                    <span>/</span>
+                    <span class="text-white/80">${info[1]}</span>
+                  </div>
+                  <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">${info[1]}</h1>
+                  <p class="text-slate-300 text-xs md:text-sm mt-1">${info[3]}</p>
+                </div>
+                <span class="b !bg-white/15 !text-white backdrop-blur-sm">${ic(info[2], "w-3.5 h-3.5 text-[#49BBBD]")}Semestre 2026.2</span>
+              </div>
+            </section>
+          `;
+        }
+        ri();
+      }
+
+      function go(v) {
+        $$(".view").forEach((e) => e.classList.toggle("on", e.id === "v-" + v));
+        $$(".nav-pill[data-v]").forEach((b) =>
+          b.classList.toggle("on", b.dataset.v === v),
+        );
+        renderHero(v);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        try {
+          history.replaceState(null, "", "#" + v);
+        } catch (e) {}
+      }
+
+      // Dados Acadêmicos
+      const CR = [
+        {
+          n: "Banco de Dados",
+          pr: "Prof. Ricardo Salles",
+          t: "code",
+          a: "#252641",
+          b: "#49BBBD",
+          pg: 72,
+          p1: 8.5,
+          p2: 7.5,
+          tr: 9,
+          f: 4,
+          lim: 15,
+          sala: "Lab 12",
+        },
+        {
+          n: "Arquitetura de Computadores",
+          pr: "Profa. Helena Duarte",
+          t: "chip",
+          a: "#134E4A",
+          b: "#49BBBD",
+          pg: 64,
+          p1: 6,
+          p2: 5.5,
+          tr: 7,
+          f: 12,
+          lim: 15,
+          sala: "Sala 304",
+        },
+        {
+          n: "Engenharia de Software",
+          pr: "Profa. Camila Nogueira",
+          t: "chart",
+          a: "#1E3A8A",
+          b: "#38BDF8",
+          pg: 80,
+          p1: 9,
+          p2: null,
+          tr: 9.5,
+          f: 2,
+          lim: 15,
+          sala: "Sala 210",
+        },
+        {
+          n: "Redes de Computadores",
+          pr: "Prof. Marcos Teixeira",
+          t: "net",
+          a: "#064E3B",
+          b: "#10B981",
+          pg: 58,
+          p1: 4,
+          p2: 3.5,
+          tr: 5,
+          f: 15,
+          lim: 15,
+          sala: "Lab 08",
+        },
+        {
+          n: "Cálculo Numérico",
+          pr: "Prof. André Vasconcelos",
+          t: "math",
+          a: "#252641",
+          b: "#0EA5E9",
+          pg: 69,
+          p1: 7,
+          p2: 8,
+          tr: 7.5,
+          f: 6,
+          lim: 11,
+          sala: "Sala 102",
+        },
+      ];
+
+      const md = (c) => {
+        const a = [
+            [c.p1, 0.35],
+            [c.p2, 0.35],
+            [c.tr, 0.3],
+          ].filter((x) => x[0] != null),
+          w = a.reduce((s, x) => s + x[1], 0);
+        return a.reduce((s, x) => s + x[0] * x[1], 0) / w;
+      };
+      const st = (c) =>
+        c.f >= c.lim
+          ? ["Reprovado por faltas", "b-bad"]
+          : c.p2 == null
+            ? ["Cursando", "b-in"]
+            : md(c) >= 7
+              ? ["Aprovado", "b-ok"]
+              : md(c) >= 4
+                ? ["Em exame", "b-wa"]
+                : ["Reprovado", "b-bad"];
+      const fq = (c) => Math.round(100 - (c.f / (c.lim * 4)) * 100),
+        f1 = (v) => (v == null ? "—" : v.toFixed(1).replace(".", ","));
+      const lv = (c) =>
+        c.f / c.lim >= 1
+          ? ["var(--bad)", "b-bad"]
+          : c.f / c.lim > 0.75
+            ? ["var(--wa)", "b-wa"]
+            : ["var(--pr)", "b-ok"];
+      CR.forEach((c) => (c.img = cov(c.t, c.a, c.b)));
+
+      // Dashboard
+      function dash() {
+        const tf = CR.reduce((s, c) => s + c.f, 0),
+          al = CR.filter((c) => c.f / c.lim > 0.75);
+
+        $("#v-dash").innerHTML = `
+          <!-- Seção de Métricas estilo "Our Success" -->
+          <div class="text-center max-w-2xl mx-auto mb-8">
+            <h2 class="text-2xl font-extrabold text-[#252641]">Indicadores do Semestre</h2>
+            <p class="mu text-xs md:text-sm mt-1">Acompanhe seu coeficiente de rendimento, frequência geral e progresso curricular.</p>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+            <div class="card p-6 text-center card-hover">
+              <span class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#252641] to-[#49BBBD] bg-clip-text text-transparent block">8,2</span>
+              <b class="text-sm mt-1 block">CR Geral</b>
+              <span class="b b-ok mt-2">${ic("trending-up", "w-3 h-3")}+0,3 pts</span>
+            </div>
+            <div class="card p-6 text-center card-hover">
+              <span class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#252641] to-[#49BBBD] bg-clip-text text-transparent block">${tf}</span>
+              <b class="text-sm mt-1 block">Faltas Totais</b>
+              <span class="b ${al.length ? "b-wa" : "b-ok"} mt-2">${al.length ? al.length + " alerta(s)" : "Regular"}</span>
+            </div>
+            <div class="card p-6 text-center card-hover">
+              <span class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#252641] to-[#49BBBD] bg-clip-text text-transparent block">69%</span>
+              <b class="text-sm mt-1 block">Semestre Concluído</b>
+              <span class="b b-in mt-2">5 semanas rest.</span>
+            </div>
+            <div class="card p-6 text-center card-hover">
+              <span class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#252641] to-[#49BBBD] bg-clip-text text-transparent block">20%</span>
+              <b class="text-sm mt-1 block">Bolsa Mérito</b>
+              <span class="b b-ok mt-2">Ativa 2026</span>
+            </div>
+          </div>
+
+          <!-- Faixa Azul Suave com Disciplinas em Curso -->
+          <div class="sec-band p-6 md:p-8 mb-12">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+              <div>
+                <h3 class="text-xl font-extrabold text-[#252641]">Disciplinas em curso</h3>
+                <p class="mu text-xs">Clique em uma disciplina para visualizar suas notas e faltas detalhadas.</p>
+              </div>
+              <button class="btn p !py-2" onclick="go('notas')">Ver boletim completo</button>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              ${CR.map(
+                (c, i) => `
+                <div class="card overflow-hidden card-hover flex flex-col">
+                  <img class="cov" src="${c.img}" alt="Capa de ${c.n}">
+                  <div class="p-5 flex-1 flex flex-col">
+                    <div class="flex items-center justify-between gap-2 text-xs mu mb-1.5">
+                      <span class="inline-flex items-center gap-1">${ic("map-pin", "w-3.5 h-3.5 text-[#49BBBD]")}${c.sala}</span>
+                      <span class="b ${st(c)[1]}">${st(c)[0]}</span>
+                    </div>
+                    <b class="text-base text-[#252641]">${c.n}</b>
+                    <small class="mu block mt-0.5">${c.pr}</small>
+
+                    <div class="mt-auto pt-4">
+                      <div class="flex justify-between text-xs mu mb-1.5">
+                        <span>Aulas ministradas</span>
+                        <b class="text-[#252641]">${c.pg}%</b>
+                      </div>
+                      <div class="pb"><i style="width:${c.pg}%;background:var(--pr)"></i></div>
+                      <button class="btn w-full mt-4 !py-2.5 hover:!border-[#49BBBD] hover:!text-[#49BBBD]" data-n="${i}">
+                        ${ic("clipboard-check", "w-4 h-4")}Ver notas e faltas
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `,
+              ).join("")}
+            </div>
+          </div>
+
+          <!-- Acesso Rápido aos Serviços -->
+          <div class="mb-4">
+            <h3 class="text-xl font-extrabold text-[#252641] mb-1">Acesso rápido aos serviços</h3>
+            <p class="mu text-xs mb-5">Resolva solicitações acadêmicas e financeiras em poucos cliques.</p>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <button onclick="go('mat')" class="card p-5 text-left card-hover">
+                <div class="w-11 h-11 rounded-2xl bg-sky-100 text-sky-600 grid place-items-center mb-3">${ic("shopping-cart", "w-5 h-5")}</div>
+                <b class="block text-sm">Matrícula 2027.1</b>
+                <small class="mu block mt-1">Monte sua grade horária para o próximo semestre.</small>
+              </button>
+              <button onclick="go('fin')" class="card p-5 text-left card-hover">
+                <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-600 grid place-items-center mb-3">${ic("wallet", "w-5 h-5")}</div>
+                <b class="block text-sm">Mensalidades e PIX</b>
+                <small class="mu block mt-1">Emita 2ª via de boletos e acompanhe pagamentos.</small>
+              </button>
+              <button onclick="go('bib')" class="card p-5 text-left card-hover">
+                <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-600 grid place-items-center mb-3">${ic("library", "w-5 h-5")}</div>
+                <b class="block text-sm">Biblioteca Central</b>
+                <small class="mu block mt-1">Renove empréstimos ativos ou reserve exemplares.</small>
+              </button>
+              <button onclick="go('msg')" class="card p-5 text-left card-hover">
+                <div class="w-11 h-11 rounded-2xl bg-purple-100 text-purple-600 grid place-items-center mb-3">${ic("mail", "w-5 h-5")}</div>
+                <b class="block text-sm">Mensagens e Avisos</b>
+                <small class="mu block mt-1">Rematrícula abre em 1º/12 · Prazo TCC I: 10/12.</small>
+              </button>
+            </div>
+          </div>
+        `;
+
+        $$("[data-n]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              go("notas");
+              setTimeout(() => {
+                document
+                  .getElementById("nc" + b.dataset.n)
+                  .scrollIntoView({ behavior: "smooth", block: "center" });
+              }, 60);
+            }),
+        );
+        ri();
+      }
+
+      // Notas
+      function notas() {
+        const al = CR.filter((c) => c.f / c.lim > 0.75);
+        $("#v-notas").innerHTML =
+          (al.length
+            ? `<div class="card p-4 mb-6 flex gap-3 items-start" style="border-color:#FCD34D;background:#FFFBEB"><span class="text-amber-600">${ic("triangle-alert", "w-5 h-5")}</span><div><b>Atenção ao limite de faltas</b><p class="mu text-xs mt-0.5">${al.map((c) => `${c.n} (${c.f}/${c.lim})`).join(" · ")}</p></div></div>`
+            : "") +
+          `<div class="grid gap-5 lg:grid-cols-2">${CR.map((c, i) => {
+            const m = md(c),
+              s = st(c),
+              l = lv(c),
+              pc = Math.min(100, (c.f / c.lim) * 100);
+            return `<div class="card p-5" id="nc${i}"><div class="flex gap-3.5 items-center"><img src="${c.img}" class="w-16 h-16 rounded-2xl object-cover" alt=""><div class="flex-1 min-w-0"><b class="block truncate text-base">${c.n}</b><small class="mu">${c.pr}</small></div><span class="b ${s[1]}">${s[0]}</span></div>
+<div class="grid grid-cols-4 gap-2.5 mt-4 text-center">${[
+              ["P1", c.p1],
+              ["P2", c.p2],
+              ["Trab.", c.tr],
+              ["Média", m],
+            ]
+              .map(
+                (x, j) =>
+                  `<div class="rounded-2xl py-2.5 ${j === 3 ? "bg-[#252641] text-white" : "bg-[#ebf5ff]"}"><small class="${j === 3 ? "text-slate-300" : "mu"} text-xs">${x[0]}</small><b class="block text-lg">${f1(x[1])}</b></div>`,
+              )
+              .join("")}</div>
+<p class="mu text-xs mt-3">${c.p2 == null ? "Média parcial (P2 pendente). " : ""}Fórmula: P1 35% + P2 35% + Trabalhos 30%. Aprovação com média ≥ 7,0 e faltas dentro do limite.</p>
+<div class="mt-4 p-3.5 rounded-2xl border bg-slate-50/60" style="border-color:var(--bd)"><div class="flex justify-between items-center mb-2"><b class="text-xs">${c.f} de ${c.lim} faltas permitidas</b><span class="b ${l[1]}">${fq(c)}% frequência</span></div><div class="pb"><i style="width:${pc}%;background:${l[0]}"></i><span class="absolute -top-1 h-4 w-0.5 bg-slate-400" style="left:75%" title="75% do limite"></span></div>${c.f / c.lim >= 1 ? `<p class="text-xs mt-2 b-bad rounded-xl p-2">Limite atingido: novas faltas reprovam a disciplina.</p>` : c.f / c.lim > 0.75 ? `<p class="text-xs mt-2 b-wa rounded-xl p-2">Você usou mais de 75% do limite. Restam ${c.lim - c.f} falta(s).</p>` : `<p class="mu text-xs mt-2">Restam ${c.lim - c.f} faltas até o limite.</p>`}</div></div>`;
+          }).join("")}</div>`;
+        ri();
+      }
+
+      // Matrícula
+      const DS = ["Seg", "Ter", "Qua", "Qui", "Sex"],
+        SL = ["08h", "10h", "14h", "16h", "19h", "21h"],
+        TN = (s) => (s < 2 ? "Manhã" : s < 4 ? "Tarde" : "Noite");
+      const CT = [
+        {
+          id: 1,
+          n: "Aprendizado de Máquina",
+          pr: "Profa. Helena Duarte",
+          t: "chart",
+          a: "#252641",
+          b: "#49BBBD",
+          d: 0,
+          s: 0,
+          v: 4,
+          h: 60,
+        },
+        {
+          id: 2,
+          n: "Sistemas Distribuídos",
+          pr: "Prof. Ricardo Salles",
+          t: "net",
+          a: "#0F172A",
+          b: "#0891B2",
+          d: 1,
+          s: 4,
+          v: 12,
+          h: 60,
+        },
+        {
+          id: 3,
+          n: "Compiladores",
+          pr: "Prof. André Vasconcelos",
+          t: "code",
+          a: "#134E4A",
+          b: "#10B981",
+          d: 2,
+          s: 2,
+          v: 2,
+          h: 60,
+        },
+        {
+          id: 4,
+          n: "Computação Gráfica",
+          pr: "Profa. Camila Nogueira",
+          t: "math",
+          a: "#334155",
+          b: "#49BBBD",
+          d: 0,
+          s: 0,
+          v: 15,
+          h: 45,
+        },
+        {
+          id: 5,
+          n: "Segurança da Informação",
+          pr: "Prof. Marcos Teixeira",
+          t: "chip",
+          a: "#064E3B",
+          b: "#0284C7",
+          d: 3,
+          s: 4,
+          v: 0,
+          h: 60,
+        },
+        {
+          id: 6,
+          n: "Interação Humano-Computador",
+          pr: "Profa. Lívia Prado",
+          t: "chart",
+          a: "#9A3412",
+          b: "#F59E0B",
+          d: 4,
+          s: 1,
+          v: 18,
+          h: 45,
+        },
+      ];
+      CT.forEach((c) => (c.img = cov(c.t, c.a, c.b)));
+      const cart = new Set(),
+        cr = (h) => h / 15;
+      let prot = null;
+      const cfl = (c) =>
+        CT.find(
+          (x) => cart.has(x.id) && x.id !== c.id && x.d === c.d && x.s === c.s,
+        );
+
+      function mat() {
+        const L = CT.filter((c) => cart.has(c.id)),
+          h = L.reduce((a, c) => a + c.h, 0);
+        $("#v-mat").innerHTML =
+          (prot
+            ? `<div class="card p-4 mb-6 flex gap-3 items-center" style="background:#ECFDF5;border-color:#A7F3D0"><span class="text-emerald-600">${ic("circle-check", "w-5 h-5")}</span><div class="flex-1"><b>Matrícula 2027.1 confirmada</b><p class="mu text-xs">Protocolo ${prot.n} · ${prot.d}</p></div></div>`
+            : "") +
+          `<div class="g2"><div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 content-start min-w-0">${CT.map(
+            (c) => {
+              const i = cart.has(c.id),
+                k = !i && cfl(c),
+                z = !i && c.v === 0,
+                off = prot || k || z;
+              return `<div class="card overflow-hidden card-hover"><img class="cov" src="${c.img}" alt="Capa de ${c.n}"><div class="p-4"><div class="flex justify-between gap-2"><b>${c.n}</b>${k ? '<span class="b b-bad">Choque</span>' : z ? '<span class="b b-bad">Lotada</span>' : ""}</div><small class="mu block">${c.pr}</small><small class="mu block">${DS[c.d]} ${SL[c.s]} · ${TN(c.s)} · ${c.h}h · ${cr(c.h)} créditos</small><span class="b ${c.v < 5 ? "b-wa" : "b-ok"} mt-2">${c.v} vagas</span><button class="btn ${i ? "" : "p"} w-full mt-3 !py-2" data-c="${c.id}" ${off && !i ? "disabled" : ""}>${i ? ic("x") + "Remover" : ic("plus") + "Adicionar"}</button></div></div>`;
+            },
+          ).join("")}</div>
+<div class="flex flex-col gap-4 content-start lg:sticky lg:top-24 self-start"><div class="card p-5"><b class="text-base">Pré-matrícula</b><div class="my-3">${L.map((c) => `<div class="flex justify-between py-2 border-t text-xs" style="border-color:var(--bd)"><span>${c.n}</span><span class="mu">${cr(c.h)} cr.</span></div>`).join("") || '<p class="mu text-xs">Selecione disciplinas no catálogo.</p>'}</div><div class="flex justify-between text-sm"><b>Total</b><b>${cr(h)} créditos · ${h}h</b></div><div class="pb mt-2"><i style="width:${Math.min(100, h / 3.6)}%;background:var(--pr)"></i></div><small class="mu text-xs">Limite de 360h</small><button class="btn p w-full mt-4" id="fn" ${L.length && !prot ? "" : "disabled"}>${ic("check")}Finalizar matrícula</button></div>
+<div class="card p-5"><b class="block mb-3 text-base">Grade semanal</b><div class="overflow-x-auto"><div class="sch"><div class="h"></div>${DS.map((d) => `<div class="h">${d}</div>`).join("")}${SL.map(
+            (s, si) =>
+              `<div class="h pt-3">${s}</div>` +
+              DS.map((_, di) => {
+                const c = L.find((x) => x.d === di && x.s === si);
+                return c
+                  ? `<div class="c">${c.n.split(" ")[0]}</div>`
+                  : "<div></div>";
+              }).join(""),
+          ).join("")}</div></div></div></div></div>`;
+        $$("[data-c]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const id = +b.dataset.c;
+              cart.has(id) ? cart.delete(id) : cart.add(id);
+              mat();
+            }),
+        );
+        const fn = $("#fn");
+        if (fn) fn.onclick = review;
+        ri();
+      }
+
+      function review() {
+        const L = CT.filter((c) => cart.has(c.id)),
+          h = L.reduce((a, c) => a + c.h, 0);
+        mod(
+          `<h3 class="text-xl font-extrabold">Revisar matrícula 2027.1</h3><p class="mu text-xs mb-3">Confira as disciplinas antes de confirmar.</p>${L.map((c) => `<div class="flex justify-between gap-3 py-2.5 border-t" style="border-color:var(--bd)"><div><b>${c.n}</b><small class="mu block">${c.pr} · ${DS[c.d]} ${SL[c.s]}</small></div><span class="mu whitespace-nowrap">${cr(c.h)} cr.</span></div>`).join("")}<div class="flex justify-between py-3 border-t font-extrabold" style="border-color:var(--bd)"><span>Total</span><span>${cr(h)} créditos · ${h}h</span></div><label class="flex gap-2 items-start p-3 rounded-xl bg-slate-100 cursor-pointer text-xs"><input type="checkbox" id="ck" class="mt-0.5"><span>Declaro que revisei as disciplinas e horários e confirmo minha matrícula.</span></label><div class="flex gap-2 justify-end mt-4"><button class="btn" onclick="cm()">Voltar</button><button class="btn p" id="ok" disabled>Confirmar matrícula</button></div>`,
+        );
+        $("#ck").onchange = (e) => ($("#ok").disabled = !e.target.checked);
+        $("#ok").onclick = (e) =>
+          ld(e.currentTarget, 1500, () => {
+            const n = new Date();
+            prot = {
+              n:
+                "MAT-" +
+                n.getFullYear() +
+                "-" +
+                String(Math.floor(Math.random() * 1e6)).padStart(6, "0"),
+              d: n.toLocaleString("pt-BR"),
+              L,
+              h,
+            };
+            cart.clear();
+            mat();
+            success();
+          });
+      }
+
+      function success() {
+        mod(
+          `<div class="text-center"><div class="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-600 grid place-items-center">${ic("check", "w-7 h-7")}</div><h3 class="text-xl font-extrabold mt-3">Matrícula realizada!</h3><p class="mu text-xs">Guarde o protocolo para consultas.</p></div><div class="my-4 p-4 rounded-xl bg-slate-100 text-xs space-y-1.5"><div class="flex justify-between"><span class="mu">Protocolo</span><b>${prot.n}</b></div><div class="flex justify-between"><span class="mu">Data e hora</span><b>${prot.d}</b></div><div class="flex justify-between"><span class="mu">Aluna</span><b>Aluno · RA 0000.0000</b></div><div class="flex justify-between"><span class="mu">Total</span><b>${prot.h / 15} créditos · ${prot.h}h</b></div>${prot.L.map((c) => `<div class="mu mt-1">• ${c.n} (${DS[c.d]} ${SL[c.s]})</div>`).join("")}</div><div class="flex gap-2 justify-end np"><button class="btn" onclick="cm()">Fechar</button><button class="btn p" id="pt">${ic("printer")}Imprimir comprovante</button></div>`,
+        );
+        $("#pt").onclick = (e) =>
+          ld(e.currentTarget, 700, () => {
+            try {
+              window.print();
+            } catch (x) {
+              toast("Impressão indisponível neste ambiente", "er");
+            }
+          });
+      }
+
+      // Perfil
+      const P = {
+        email: "aluno@email.com",
+        tel: "(11) 98765-4321",
+        end: "Rua das Acácias, 245 · Jundiaí, SP",
+      };
+      let PD = { ...P };
+      function perfil() {
+        const dirty = JSON.stringify(P) !== JSON.stringify(PD);
+        $("#v-perfil").innerHTML =
+          `<div class="card overflow-hidden mb-6"><img class="w-full h-36 md:h-44 object-cover" src="${BANNER_URL}" alt="Banner institucional"><div class="px-6 pb-6 flex flex-wrap items-end gap-4 -mt-10 relative z-10"><img src="${AVA}" class="w-[88px] h-[88px] rounded-2xl border-4 border-white shadow-md" alt="Aluno"><div class="flex-1 pt-10 sm:pt-0"><h2 class="text-2xl font-extrabold">Aluno</h2><p class="mu text-xs">Ciência da Computação · Campus Jundiaí</p></div><span class="b b-ok">${ic("circle-check", "w-3 h-3")}Matrícula ativa</span></div></div>
+            <div class="grid gap-5 lg:grid-cols-2"><div class="card p-6"><b class="text-base">Dados acadêmicos</b>${[
+            ["RA", "2023.0815"],
+            ["Curso", "Ciência da Computação"],
+            ["Semestre", "5º período · 2026.2"],
+            ["Campus", "Jundiaí"],
+            ["Situação da matrícula", "Ativa"],
+          ]
+            .map(
+              (r) =>
+                `<div class="flex justify-between py-2.5 border-t first:mt-3 text-xs" style="border-color:var(--bd)"><span class="mu">${r[0]}</span><b>${r[1]}</b></div>`,
+            )
+            .join("")}</div>
+<div class="card p-6"><b class="text-base">Dados pessoais</b><div class="space-y-3 mt-3">${[
+            ["email", "E-mail pessoal", "email"],
+            ["tel", "Telefone", "tel"],
+            ["end", "Endereço", "text"],
+          ]
+            .map(
+              (f) =>
+                `<label class="block"><span class="mu text-xs font-semibold">${f[1]}</span><input class="in mt-1 text-xs" data-f="${f[0]}" type="${f[2]}" value="${PD[f[0]]}"></label>`,
+            )
+            .join(
+              "",
+            )}</div><div class="flex gap-2 mt-4 flex-wrap"><button class="btn p" id="sv" ${dirty ? "" : "disabled"}>${ic("save")}Salvar alterações</button><button class="btn" id="pw">${ic("key-round")}Alterar senha</button></div></div>
+<div class="card p-6 lg:col-span-2"><b class="text-base">Solicitar documento</b><div class="flex gap-2 mt-3 flex-wrap"><select class="in !w-auto flex-1 min-w-[200px] text-xs" id="dt"><option>Atestado de matrícula</option><option>Histórico escolar</option><option>Declaração de vínculo</option></select><button class="btn p" id="dq">${ic("file-text")}Solicitar</button></div></div></div>`;
+        $$("[data-f]").forEach(
+          (i) =>
+            (i.oninput = () => {
+              PD[i.dataset.f] = i.value;
+              $("#sv").disabled = JSON.stringify(P) === JSON.stringify(PD);
+            }),
+        );
+        $("#sv").onclick = () => {
+          mod(
+            `<h3 class="text-xl font-extrabold">Confirmar alteração?</h3><p class="mu text-xs my-3">Por segurança, seus dados de contato serão atualizados no cadastro institucional e um aviso será enviado ao e-mail anterior.</p><div class="flex gap-2 justify-end"><button class="btn" onclick="cm()">Cancelar</button><button class="btn p" id="y">Confirmar e salvar</button></div>`,
+          );
+          $("#y").onclick = (e) =>
+            ld(e.currentTarget, 1200, () => {
+              Object.assign(P, PD);
+              cm();
+              perfil();
+              toast("Dados salvos com sucesso");
+            });
+        };
+        $("#pw").onclick = () => {
+          mod(
+            `<h3 class="text-xl font-extrabold">Alterar senha</h3><div class="space-y-3 my-4">${["Senha atual", "Nova senha (mín. 8 caracteres)", "Confirmar nova senha"].map((l, i) => `<label class="block"><span class="mu text-xs font-semibold">${l}</span><input class="in mt-1" type="password" id="p${i}"></label>`).join("")}<p id="pe" class="text-xs" style="color:#B91C1C"></p></div><div class="flex gap-2 justify-end"><button class="btn" onclick="cm()">Cancelar</button><button class="btn p" id="ps">Atualizar senha</button></div>`,
+          );
+          $("#ps").onclick = (e) => {
+            const a = $("#p0").value,
+              b = $("#p1").value,
+              c = $("#p2").value,
+              er = $("#pe");
+            if (!a) return (er.textContent = "Informe a senha atual.");
+            if (b.length < 8)
+              return (er.textContent =
+                "A nova senha precisa de 8 ou mais caracteres.");
+            if (b !== c) return (er.textContent = "As senhas não coincidem.");
+            er.textContent = "";
+            ld(e.currentTarget, 1300, () => {
+              cm();
+              toast("Senha alterada com sucesso");
+            });
+          };
+        };
+        $("#dq").onclick = (e) => {
+          const t = $("#dt").value;
+          ld(e.currentTarget, 1200, () =>
+            toast(t + " solicitado. Pronto em até 2 dias úteis."),
+          );
+        };
+        ri();
+      }
+
+      // Logout
+      $("#lo").onclick = () => {
+        mod(
+          `<h3 class="text-xl font-extrabold">Sair da conta?</h3><p class="mu text-xs my-3">Você precisará entrar novamente para acessar o portal.</p><div class="flex gap-2 justify-end"><button class="btn" onclick="cm()">Cancelar</button><button class="btn d" id="y">Sair</button></div>`,
+        );
+        $("#y").onclick = (e) =>
+          ld(e.currentTarget, 1000, () => {
+            mod(
+              `<div class="text-center py-4"><div class="w-14 h-14 mx-auto rounded-full bg-teal-100 text-[#49BBBD] grid place-items-center">${ic("log-out", "w-7 h-7")}</div><h3 class="text-xl font-extrabold mt-3">Sessão encerrada</h3><p class="mu text-xs my-2">Até logo, Aluno!</p><button class="btn p" id="rl">Entrar novamente</button></div>`,
+            );
+            $("#rl").onclick = (e) =>
+              ld(e.currentTarget, 900, () => {
+                cm();
+                toast("Bem-vinda de volta!");
+              });
+          });
+      };
+
+      const DC = {
+        ok: "#10B981",
+        wa: "#F59E0B",
+        bad: "#EF4444",
+        in: "#49BBBD",
+      };
+      const cp = (t) => {
+        const o = () => toast("Código copiado");
+        const fb = () => {
+          const a = document.createElement("textarea");
+          a.value = t;
+          document.body.appendChild(a);
+          a.select();
+          try {
+            document.execCommand("copy");
+          } catch (e) {}
+          a.remove();
+          o();
+        };
+        if (navigator.clipboard) navigator.clipboard.writeText(t).then(o, fb);
+        else fb();
+      };
+
+      // Agenda
+      const MN = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro",
+      ];
+      const EV = {
+        "2026-11-12": [["Banco de Dados · 14h · Lab 12", "in"]],
+        "2026-11-13": [["Prova P2 · Redes de Computadores", "bad"]],
+        "2026-11-18": [["Entrega do projeto · Eng. de Software", "wa"]],
+        "2026-11-20": [["Feriado · Consciência Negra", "ok"]],
+        "2026-11-24": [["Prova · Cálculo Numérico", "bad"]],
+        "2026-11-27": [["Prova · Arquitetura de Computadores", "bad"]],
+        "2026-12-01": [["Abertura da rematrícula 2027.1", "in"]],
+        "2026-12-10": [["Prazo final · TCC I", "wa"]],
+      };
+      const kd = (y, m, d) =>
+          y +
+          "-" +
+          String(m + 1).padStart(2, "0") +
+          "-" +
+          String(d).padStart(2, "0"),
+        T0 = new Date(),
+        TK = kd(T0.getFullYear(), T0.getMonth(), T0.getDate());
+      let cy = 2026,
+        cmo = 10,
+        csel = "2026-11-12";
+      function agenda() {
+        const f0 = new Date(cy, cmo, 1).getDay(),
+          n = new Date(cy, cmo + 1, 0).getDate();
+        let c = "";
+        for (let i = 0; i < f0; i++) c += "<div></div>";
+        for (let d = 1; d <= n; d++) {
+          const k = kd(cy, cmo, d),
+            e = EV[k] || [],
+            s = k === csel;
+          c += `<button data-k="${k}" class="aspect-square rounded-2xl border text-sm transition flex flex-col items-center justify-center gap-0.5 ${s ? "bg-[#49BBBD] text-white border-[#49BBBD] shadow-md" : k === TK ? "border-[#49BBBD] text-[#218385] font-bold" : "bg-white hover:bg-slate-50"}" ${s || k === TK ? "" : 'style="border-color:var(--bd)"'}>${d}<span class="flex gap-0.5 h-1.5">${e.map((x) => `<i class="w-1.5 h-1.5 rounded-full" style="background:${s ? "#fff" : DC[x[1]]}"></i>`).join("")}</span></button>`;
+        }
+        const se = EV[csel] || [],
+          up = Object.keys(EV)
+            .sort()
+            .filter((k) => k >= TK)
+            .slice(0, 6),
+          fm2 = (k) => k.slice(8) + "/" + k.slice(5, 7),
+          row = (k, x) =>
+            `<div class="flex gap-3 items-start py-2 text-xs"><i class="w-2.5 h-2.5 rounded-full mt-1 flex-none" style="background:${DC[x[1]]}"></i><span>${x[0]}${k ? `<small class="mu block">${fm2(k)}</small>` : ""}</span></div>`;
+        $("#v-agenda").innerHTML =
+          `<div class="g2"><div class="card p-6"><div class="flex items-center justify-between mb-4"><h3 class="text-lg font-extrabold">${MN[cmo]} ${cy}</h3><div class="flex gap-2"><button class="btn !p-2" data-m="-1" aria-label="Mês anterior">${ic("chevron-left")}</button><button class="btn !p-2" data-m="1" aria-label="Próximo mês">${ic("chevron-right")}</button></div></div><div class="grid grid-cols-7 gap-1.5 text-center mu text-xs mb-1.5">${["D", "S", "T", "Q", "Q", "S", "S"].map((x) => `<span>${x}</span>`).join("")}</div><div class="grid grid-cols-7 gap-1.5">${c}</div></div><div class="flex flex-col gap-4 self-start"><div class="card p-5"><b>Dia ${fm2(csel)}</b><div class="mt-2">${se.map((x) => row("", x)).join("") || '<p class="mu text-xs mt-1">Nenhum compromisso neste dia.</p>'}</div></div><div class="card p-5"><b>Próximos eventos</b><div class="mt-2">${up.map((k) => EV[k].map((x) => row(k, x)).join("")).join("")}</div></div></div></div>`;
+        $$("[data-k]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              csel = b.dataset.k;
+              agenda();
+            }),
+        );
+        $$("[data-m]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              cmo += +b.dataset.m;
+              if (cmo < 0) {
+                cmo = 11;
+                cy--;
+              }
+              if (cmo > 11) {
+                cmo = 0;
+                cy++;
+              }
+              agenda();
+            }),
+        );
+        ri();
+      }
+
+      // Financeiro
+      const PA = MN.map((m, i) => ({
+        m,
+        v:
+          (i === 10 ? "20" : "10") +
+          "/" +
+          String(i + 1).padStart(2, "0") +
+          "/2026",
+        s: i < 10 ? "Pago" : i === 10 ? "Aberto" : "A vencer",
+      }));
+      const LD = "34191.79001 01043.510047 91020.150008 8 97650000148000",
+        PX =
+          "00020126580014br.gov.bcb.pix0136financeiro@EduConnect.edu.br5204000053039865406148.005802BR";
+      function fm(i) {
+        const p = PA[i];
+        if (p.s === "Pago")
+          return mod(
+            `<h3 class="text-xl font-extrabold">Recibo · ${p.m}/2026</h3><p class="mu text-xs my-3">Pagamento de R$ 1.480,00 confirmado via PIX.</p><div class="flex justify-end"><button class="btn p" onclick="cm()">Fechar</button></div>`,
+          );
+        mod(
+          `<h3 class="text-xl font-extrabold">Boleto · ${p.m}/2026</h3><p class="mu text-xs">Vencimento <b>${p.v}</b> · R$ 1.480,00</p><small class="mu block mt-4 text-xs">Linha digitável</small><div class="p-3 rounded-xl bg-slate-100 text-xs break-all font-mono mt-1">${LD}</div><div class="flex flex-wrap gap-2 mt-4"><button class="btn p" data-cp="${LD}">${ic("copy")}Copiar linha digitável</button><button class="btn" data-cp="${PX}">${ic("qr-code")}Copiar PIX</button></div><div class="flex gap-2 justify-end mt-5"><button class="btn" id="sv2">Gerar 2ª via</button><button class="btn" onclick="cm()">Fechar</button></div>`,
+        );
+        $$("[data-cp]").forEach((b) => (b.onclick = () => cp(b.dataset.cp)));
+        $("#sv2").onclick = (e) =>
+          ld(e.currentTarget, 1100, () =>
+            toast("2ª via gerada e enviada ao seu e-mail"),
+          );
+      }
+      function fin() {
+        $("#v-fin").innerHTML =
+          `<div class="grid gap-4 sm:grid-cols-3 mb-6"><div class="card p-5"><small class="mu text-xs">Pago em 2026</small><b class="block text-2xl mt-1">R$ 14.800,00</b><span class="b b-ok mt-2">10 parcelas</span></div><div class="card p-5"><small class="mu text-xs">Em aberto</small><b class="block text-2xl mt-1">R$ 1.480,00</b><button class="btn p !py-1.5 mt-2" data-f="10">${ic("qr-code")}Pagar com PIX</button></div><div class="card p-5"><small class="mu text-xs">Bolsa de mérito</small><b class="block text-2xl mt-1">20%</b><span class="b b-in mt-2">Ativa até 12/2026</span></div></div><div class="card p-6"><b class="text-base">Mensalidades 2026</b><div class="overflow-x-auto mt-3"><table class="w-full min-w-[560px] text-left text-xs"><thead class="mu"><tr><th class="py-2.5">Competência</th><th>Vencimento</th><th>Valor</th><th>Status</th><th></th></tr></thead><tbody>${PA.map((p, i) => `<tr class="border-t" style="border-color:var(--bd)"><td class="py-3 font-semibold">${p.m}</td><td>${p.v}</td><td>R$ 1.480,00</td><td><span class="b ${p.s === "Pago" ? "b-ok" : p.s === "Aberto" ? "b-wa" : "b-in"}">${p.s}</span></td><td class="text-right"><button class="btn !py-1.5 !px-3.5" data-f="${i}">${p.s === "Pago" ? "Recibo" : "Ver boleto"}</button></td></tr>`).join("")}</tbody></table></div></div>`;
+        $$("[data-f]").forEach((b) => (b.onclick = () => fm(+b.dataset.f)));
+        ri();
+      }
+
+      // Biblioteca
+      const BK = [
+        [
+          1,
+          "Algoritmos: Teoria e Prática",
+          "Cormen et al.",
+          "Algoritmos",
+          "code",
+          "#252641",
+          "#49BBBD",
+          3,
+        ],
+        [
+          2,
+          "Arquitetura de Computadores",
+          "Hennessy, Patterson",
+          "Hardware",
+          "chip",
+          "#134E4A",
+          "#49BBBD",
+          0,
+        ],
+        [
+          3,
+          "Engenharia de Software",
+          "Ian Sommerville",
+          "Engenharia",
+          "chart",
+          "#1E3A8A",
+          "#38BDF8",
+          5,
+        ],
+        [
+          4,
+          "Redes de Computadores",
+          "Tanenbaum",
+          "Redes",
+          "net",
+          "#064E3B",
+          "#10B981",
+          2,
+        ],
+        [
+          5,
+          "Cálculo Numérico",
+          "Ruggiero",
+          "Matemática",
+          "math",
+          "#334155",
+          "#0EA5E9",
+          4,
+        ],
+        [
+          6,
+          "Sistemas de Banco de Dados",
+          "Elmasri, Navathe",
+          "Dados",
+          "code",
+          "#0C4A6E",
+          "#38BDF8",
+          1,
+        ],
+        [
+          7,
+          "Código Limpo",
+          "Robert C. Martin",
+          "Engenharia",
+          "chart",
+          "#9A3412",
+          "#F59E0B",
+          0,
+        ],
+        [
+          8,
+          "Inteligência Artificial",
+          "Russell, Norvig",
+          "Algoritmos",
+          "net",
+          "#14532D",
+          "#49BBBD",
+          6,
+        ],
+      ].map((a) => ({
+        id: a[0],
+        t: a[1],
+        a: a[2],
+        c: a[3],
+        img: cov(a[4], a[5], a[6]),
+        ex: a[7],
+      }));
+      const dd = (n) => {
+          const d = new Date();
+          d.setDate(d.getDate() + n);
+          return d;
+        },
+        fd = (d) => d.toLocaleDateString("pt-BR"),
+        LN = { 1: { due: dd(2), r: 0 }, 6: { due: dd(13), r: 1 } },
+        RS = new Set([2]);
+      let bq = "",
+        bcat = "Todas";
+      function bib() {
+        $("#v-bib").innerHTML =
+          `<div class="g2"><div class="min-w-0"><input id="bs" class="in mb-3 text-xs" placeholder="Buscar por título ou autor" value="${bq}"><div class="flex flex-wrap gap-2 mb-4">${["Todas", ...new Set(BK.map((b) => b.c))].map((c) => `<button class="btn !py-1.5 !px-3.5 ${c === bcat ? "p" : ""}" data-bc="${c}">${c}</button>`).join("")}</div><div id="bk" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"></div></div><div class="card p-5 self-start"><b class="text-base">Meus empréstimos</b><div id="ln" class="mt-3"></div></div></div>`;
+        $("#bs").oninput = (e) => {
+          bq = e.target.value;
+          blist();
+        };
+        $$("[data-bc]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              bcat = b.dataset.bc;
+              bib();
+            }),
+        );
+        blist();
+        ri();
+      }
+      function blist() {
+        const L = BK.filter(
+          (b) =>
+            (bcat === "Todas" || b.c === bcat) &&
+            (b.t + b.a).toLowerCase().includes(bq.toLowerCase()),
+        );
+        $("#bk").innerHTML =
+          L.map((b) => {
+            const l = LN[b.id],
+              r = RS.has(b.id);
+            return `<div class="card overflow-hidden card-hover"><img class="cov" src="${b.img}" alt="Capa de ${b.t}"><div class="p-4"><b>${b.t}</b><small class="mu block">${b.a} · ${b.c}</small><span class="b ${l ? "b-in" : b.ex > 0 ? "b-ok" : "b-bad"} mt-2">${l ? "Com você" : b.ex > 0 ? b.ex + " exemplares" : "Indisponível"}</span><button class="btn ${b.ex > 0 && !l ? "p" : ""} w-full mt-3 !py-2" data-b="${b.id}" ${l || (r && b.ex === 0) ? "disabled" : ""}>${l ? "Emprestado" : b.ex > 0 ? "Emprestar" : r ? "Reservado" : "Reservar"}</button></div></div>`;
+          }).join("") || '<p class="mu text-xs">Nenhum livro encontrado.</p>';
+        $("#ln").innerHTML =
+          Object.keys(LN)
+            .map((k) => {
+              const b = BK.find((x) => x.id == k),
+                l = LN[k],
+                n = Math.ceil((l.due - new Date()) / 864e5);
+              return `<div class="py-3 border-t text-xs" style="border-color:var(--bd)"><b class="block">${b.t}</b><small class="mu">Devolução em ${fd(l.due)}</small> <span class="b ${n <= 3 ? "b-wa" : "b-ok"}">${n} dia(s)</span><div class="flex gap-2 mt-2"><button class="btn !py-1 !px-3" data-r="${k}" ${l.r >= 2 ? "disabled" : ""}>Renovar (${2 - l.r})</button><button class="btn !py-1 !px-3" data-dv="${k}">Devolver</button></div></div>`;
+            })
+            .join("") || '<p class="mu text-xs">Nenhum empréstimo ativo.</p>';
+        $$("[data-b]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const k = +b.dataset.b,
+                bk = BK.find((x) => x.id === k);
+              ld(b, 900, () => {
+                if (bk.ex > 0) {
+                  bk.ex--;
+                  LN[k] = { due: dd(14), r: 0 };
+                  toast(
+                    "Empréstimo registrado · devolução em " + fd(LN[k].due),
+                  );
+                } else {
+                  RS.add(k);
+                  toast("Reserva registrada. Avisaremos quando chegar.");
+                }
+                blist();
+              });
+            }),
+        );
+        $$("[data-r]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const k = b.dataset.r;
+              ld(b, 900, () => {
+                LN[k].due = new Date(LN[k].due.getTime() + 7 * 864e5);
+                LN[k].r++;
+                toast("Renovado até " + fd(LN[k].due));
+                blist();
+              });
+            }),
+        );
+        $$("[data-dv]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const k = b.dataset.dv;
+              ld(b, 900, () => {
+                BK.find((x) => x.id == k).ex++;
+                delete LN[k];
+                toast("Devolução registrada");
+                blist();
+              });
+            }),
+        );
+        ri();
+      }
+
+      // Mensagens
+      const MG = [
+        {
+          id: 1,
+          fr: "Prof. Ricardo Salles",
+          sj: "Nota da P2 disponível",
+          bd: "Olá, Aluno! As notas da P2 de Banco de Dados já estão no portal. Atendimento para revisão na quarta, às 14h, no Lab 12.",
+          tm: "Hoje, 09:41",
+          rd: 0,
+          rp: [],
+        },
+        {
+          id: 2,
+          fr: "Coordenação do Curso",
+          sj: "Rematrícula 2027.1",
+          bd: "A rematrícula abre em 1º de dezembro. Revise os pré-requisitos antes de montar sua grade.",
+          tm: "Ontem",
+          rd: 0,
+          rp: [],
+        },
+        {
+          id: 3,
+          fr: "Profa. Camila Nogueira",
+          sj: "Prorrogação da entrega",
+          bd: "A entrega do projeto de Engenharia de Software foi prorrogada até 18/11. Não haverá nova prorrogação.",
+          tm: "09/11",
+          rd: 0,
+          rp: [],
+        },
+        {
+          id: 4,
+          fr: "Secretaria Acadêmica",
+          sj: "Atestado de matrícula emitido",
+          bd: "Seu atestado já está disponível. Solicite novas vias pelo seu perfil.",
+          tm: "10/11",
+          rd: 1,
+          rp: [],
+        },
+        {
+          id: 5,
+          fr: "Biblioteca Central",
+          sj: "Livro disponível para retirada",
+          bd: "O exemplar reservado de Arquitetura de Computadores chegou. Retire em até 3 dias.",
+          tm: "07/11",
+          rd: 1,
+          rp: [],
+        },
+      ];
+      let mid = 0;
+      function msg() {
+        const un = MG.filter((m) => !m.rd).length;
+        $$(".mbg").forEach((el) => {
+          el.textContent = un;
+          el.style.display = un ? "grid" : "none";
+        });
+        const m = MG.find((x) => x.id === mid);
+        $("#v-msg").innerHTML =
+          `<div class="g3"><div class="card overflow-hidden self-start">${MG.map((x) => `<button data-mg="${x.id}" class="w-full text-left flex gap-3 p-4 border-b transition ${x.id === mid ? "bg-[#ebf5ff]" : "hover:bg-slate-50"}" style="border-color:var(--bd)"><span class="w-10 h-10 rounded-full bg-[#49BBBD]/15 text-[#218385] grid place-items-center font-bold flex-none">${x.fr.replace(/^Profa?\.\s/, "")[0]}</span><span class="min-w-0 flex-1 text-xs"><span class="flex justify-between gap-2"><b class="truncate ${x.rd ? "font-medium" : ""}">${x.fr}</b><small class="mu flex-none">${x.tm}</small></span><span class="block truncate ${x.rd ? "mu" : "font-semibold"}">${x.sj}</span></span>${x.rd ? "" : '<i class="w-2 h-2 mt-2 rounded-full bg-[#49BBBD] flex-none"></i>'}</button>`).join("")}</div><div class="card p-6 min-h-[260px]">${m ? `<small class="mu text-xs">${m.fr} · ${m.tm}</small><h3 class="text-xl font-extrabold mt-1">${m.sj}</h3><p class="my-4 text-sm">${m.bd}</p>${m.rp.map((r) => `<div class="p-3 rounded-2xl bg-[#ebf5ff] mb-2 ml-8 text-xs"><small class="mu block">Você · agora</small>${r}</div>`).join("")}<textarea id="rp" rows="3" class="in mt-3 text-xs" placeholder="Escreva sua resposta"></textarea><button class="btn p mt-3" id="sr">${ic("send")}Enviar resposta</button>` : '<p class="mu text-xs">Selecione uma mensagem para ler.</p>'}</div></div>`;
+        $$("[data-mg]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              mid = +b.dataset.mg;
+              MG.find((x) => x.id === mid).rd = 1;
+              msg();
+            }),
+        );
+        const sr = $("#sr");
+        if (sr)
+          sr.onclick = (e) => {
+            const t = $("#rp").value.trim();
+            if (!t) return toast("Escreva uma resposta antes de enviar", "er");
+            ld(e.currentTarget, 1000, () => {
+              m.rp.push(t);
+              msg();
+              toast("Resposta enviada a " + m.fr);
+            });
+          };
+        ri();
+      }
+
+      // Notificações e Busca
+      const NT = [
+        ["Nota da P2 publicada em Banco de Dados", "há 2 h", "notas", 1],
+        ["Boleto de novembro vence em 20/11", "há 1 dia", "fin", 1],
+        ["Reserva disponível na biblioteca", "há 3 dias", "bib", 1],
+        ["Rematrícula 2027.1 abre em 1º/12", "há 3 dias", "mat", 0],
+      ];
+      function nt() {
+        const u = NT.filter((n) => n[3]).length;
+        $("#bc").textContent = u;
+        $("#bc").style.display = u ? "grid" : "none";
+        $("#pp").innerHTML =
+          `<div class="flex justify-between items-center px-4 py-3 border-b" style="border-color:var(--bd)"><b class="text-xs">Notificações</b><button class="text-[#49BBBD] text-xs font-bold" id="mr">Marcar como lidas</button></div>` +
+          NT.map(
+            (n, i) =>
+              `<button data-nt="${i}" class="w-full text-left flex gap-3 px-4 py-3 border-b last:border-0 hover:bg-slate-50 transition text-xs" style="border-color:var(--bd)">${n[3] ? '<i class="w-2 h-2 mt-1.5 rounded-full bg-[#49BBBD] flex-none"></i>' : '<i class="w-2 flex-none"></i>'}<span>${n[0]}<small class="mu block">${n[1]}</small></span></button>`,
+          ).join("");
+        $("#mr").onclick = () => {
+          NT.forEach((n) => (n[3] = 0));
+          nt();
+        };
+        $$("[data-nt]").forEach(
+          (b) =>
+            (b.onclick = () => {
+              const n = NT[b.dataset.nt];
+              n[3] = 0;
+              nt();
+              $("#pp").classList.remove("o");
+              go(n[2]);
+            }),
+        );
+      }
+      $("#bl").onclick = (e) => {
+        e.stopPropagation();
+        $("#pp").classList.toggle("o");
+      };
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("#pp")) $("#pp").classList.remove("o");
+      });
+
+      function srch() {
+        mod(
+          `<input id="qi" class="in text-xs" placeholder="Buscar páginas, disciplinas e livros" autocomplete="off"><div id="qr" class="mt-3 max-h-80 overflow-auto"></div>`,
+        );
+        const IX = [
+          ...V.map((v) => [v[1], "Página", v[2], () => go(v[0])]),
+          ...CR.map((c, i) => [
+            c.n,
+            "Disciplina",
+            "book-open",
+            () => {
+              go("notas");
+              setTimeout(
+                () =>
+                  document
+                    .getElementById("nc" + i)
+                    .scrollIntoView({ behavior: "smooth", block: "center" }),
+                50,
+              );
+            },
+          ]),
+          ...BK.map((b) => [
+            b.t,
+            "Livro",
+            "library",
+            () => {
+              go("bib");
+              bq = b.t;
+              bib();
+            },
+          ]),
+        ];
+        const r = (q) => {
+          const l = IX.filter((x) =>
+            x[0].toLowerCase().includes(q.toLowerCase()),
+          ).slice(0, 8);
+          $("#qr").innerHTML =
+            l
+              .map(
+                (x) =>
+                  `<button data-i="${IX.indexOf(x)}" class="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-100 transition text-left text-xs"><span class="text-[#49BBBD]">${ic(x[2])}</span><span class="flex-1 font-medium">${x[0]}</span><small class="mu">${x[1]}</small></button>`,
+              )
+              .join("") || '<p class="mu p-2 text-xs">Nada encontrado.</p>';
+          ri();
+          $$("[data-i]").forEach(
+            (b) =>
+              (b.onclick = () => {
+                cm();
+                IX[b.dataset.i][3]();
+              }),
+          );
+        };
+        r("");
+        $("#qi").oninput = (e) => r(e.target.value);
+        $("#qi").onkeydown = (e) => {
+          if (e.key === "Enter") {
+            const b = $("[data-i]");
+            if (b) b.click();
+          }
+        };
+        $("#qi").focus();
+      }
+      $("#sk").onclick = srch;
+      $("#a1b").onclick = () => go("perfil");
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+          e.preventDefault();
+          srch();
+        }
+      });
+
+      agenda();
+      fin();
+      bib();
+      msg();
+      nt();
+      dash();
+      notas();
+      mat();
+      perfil();
+      ri();
+      const h = location.hash.slice(1);
+      go(V.some((v) => v[0] === h) ? h : "dash");
+    </script>
+  </body>
+</html>
