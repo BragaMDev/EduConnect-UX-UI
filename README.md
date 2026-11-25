@@ -21,11 +21,11 @@ O objetivo deste projeto foi conceber uma interface **intuitiva, acessível, mod
 
 ## Estrutura do Repositório
 
-A organização dos arquivos deste repositório reflete as entregas técnicas e visuais do projeto:
+A organização dos arquivos deste repositório reflete as entregas técnicas, visuais e de documentação do projeto:
 
 ```text
 EduConnect-UX-UI/
-├── EduConnect.html     # Estrutura principal da interface do novo portal acadêmico (com estilos e scripts integrados)
-├── EduConnect.png      # Ícone da EduConnect
-└── Apresentação.pdf    # Documento completo com estudo de caso, pesquisa UX, wireframes e guia de estilo
-
+├── EduConnect.html                         
+├── EduConnect.jpg                          
+├── Apresentação - EduConnect - UXUI.pdf    
+└── REDESIGN DE WEBSITE - DOCUMENTAÇÃO - UXUI.pdf
